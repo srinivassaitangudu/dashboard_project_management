@@ -1,4 +1,5 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint,request,  jsonify
+from app.crud.dashboard import Dashboard
 
 main = Blueprint('main', __name__)
 
@@ -6,11 +7,18 @@ main = Blueprint('main', __name__)
 def health_check():
     return jsonify({"status": "UP"}), 200
 
-@main.route("/open_tasks/", methods=["GET"])
-def get_open_tasks(employee_id:str):
+@main.route("/open_tasks", methods=["GET"])
+def get_open_tasks():
+    email = request.args.get('email')
 
-    return jsonify({'open_tasks':employee_id})
+    open_tasks = Dashboard().get_open_tasks(employee_id=email)
 
-@main.route("/closed_tasks")
-def get_closed_tasks(employee_id:str):
-    return jsonify({"closed_tasks":employee_id})
+    return jsonify({'open_tasks':open_tasks})
+
+@main.route("/closed_tasks", methods=["GET"])
+def get_closed_tasks():
+    email = request.args.get('email')
+
+    closed_tasks = Dashboard().get_closed_tasks(employee_id=email)
+    return jsonify({"closed_tasks":closed_tasks})
+
