@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  dashboard_api:
+    container_name: dashboard_api
+    build:
+      context: ./
+    # command:
+    volumes:
+      - ./api:/app/api
+      - .env:/app/.env
+    ports:
+      - 8000:8000
+    networks:
+      - hughes_network
+  
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: on-failure:3
+    env_file: .env
+    volumes: 
+      - pgadmin_data:/var/lib/pgadmin/data/
+    ports:
+      - 5050:80
+    networks:
+      - hughes_network
+
+volumes:
+  pgadmin_data:
+
+networks:
+  hughes_network:
+    driver: bridge
+
+
+      
