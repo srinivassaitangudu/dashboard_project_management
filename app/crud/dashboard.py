@@ -19,7 +19,6 @@ class Dashboard():
             f""" SELECT * FROM projecttaskmaster P
             WHERE P.assignee = \'{employee_id}\' AND P.completion IS FALSE
 """)
-        # print(open_tasks)
         open_tasks= curs.fetchall()
         curs.close()
         return [task for task in open_tasks]
@@ -32,12 +31,18 @@ class Dashboard():
             WHERE P.assignee = \'{employee_id}\' AND P.completion IS TRUE
             LIMIT 5
 """)
-        # print(open_tasks)
         closed_tasks= curs.fetchall()
         curs.close()
         return [task for task in closed_tasks]
          
     
-    def change_status(self, employee_id:str, task_id:str):
+    def change_status(self, employee_id:str, project_task_id:str, status:bool):
         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        curs.execute(f"""
+            UPDATE projecttaskmaster p SET completion = {status}
+            WHERE p.projecttaskid = {project_task_id} AND p.assignee = {employee_id}
+""")
+        curs.fetchall()
+        curs.close()
         return 

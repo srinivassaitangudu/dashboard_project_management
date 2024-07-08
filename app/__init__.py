@@ -1,5 +1,5 @@
 from flask import Flask
-from .endpoints.dashboard import main
+from app.endpoints.dashboard import main
 
 def create_app():
     app = Flask(__name__)
