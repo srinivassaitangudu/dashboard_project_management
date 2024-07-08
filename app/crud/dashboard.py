@@ -39,10 +39,14 @@ class Dashboard():
     def change_status(self, employee_id:str, project_task_id:str, status:bool):
         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-        curs.execute(f"""
+        curs.execute(
+            f"""
             UPDATE projecttaskmaster p SET completion = {status}
-            WHERE p.projecttaskid = {project_task_id} AND p.assignee = {employee_id}
+            WHERE p.projecttaskid = {project_task_id} AND p.assignee = \'{employee_id}\';
 """)
-        curs.fetchall()
+        # curs.fetchall()
+        self.db.commit()
         curs.close()
-        return 
+        return True
+    
+# dashboard = Dashboard()

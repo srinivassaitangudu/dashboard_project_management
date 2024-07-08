@@ -1,5 +1,7 @@
 from flask import Blueprint,request,  jsonify
 from app.crud.dashboard import Dashboard
+from app.utils.common import generate_response
+from app.utils.http_code import *
 
 main = Blueprint('main', __name__)
 
@@ -26,7 +28,12 @@ def get_closed_tasks():
 @main.route("/change_task_status", methods=["POST"])
 def change_task_status():
     input_data =request.json
-    Dashboard().change_status(employee_id=input_data["email"], project_task_id=input_data["project_task_id"], status=input_data["status"])
+
+    try:
+        Dashboard().change_status(employee_id=input_data["email"], project_task_id=input_data["project_task_id"], status=input_data["status"])
+        return generate_response(message="Status updated!", status= HTTP_200_OK)
+    except Exception as e:
+        return generate_response(message=e, status=HTTP_400_BAD_REQUEST)
 
 
 
