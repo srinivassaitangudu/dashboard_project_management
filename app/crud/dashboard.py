@@ -47,6 +47,7 @@ class Dashboard():
         # curs.fetchall()
         self.db.commit()
         curs.close()
+        self.db.close()
         return True
     
 # dashboard = Dashboard()
