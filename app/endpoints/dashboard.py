@@ -3,15 +3,17 @@ from app.crud.dashboard import Dashboard
 from app.utils.common import generate_response
 from app.utils.http_code import *
 from flask_cors import cross_origin
+# from app.endpoints.api import main
 
-main = Blueprint('main', __name__)
 
-@main.route("/health", methods=['GET'])
+home = Blueprint('home', __name__)
+
+@home.route("/health", methods=['GET'])
 @cross_origin()
 def health_check():
     return jsonify({"status": "UP"}), 200
 
-@main.route("/open_tasks", methods=["GET"])
+@home.route("/open_tasks", methods=["GET"])
 @cross_origin()
 def get_open_tasks():
     email = request.args.get('email')
@@ -20,7 +22,7 @@ def get_open_tasks():
 
     return jsonify({'open_tasks':open_tasks})
 
-@main.route("/closed_tasks", methods=["GET"])
+@home.route("/closed_tasks", methods=["GET"])
 @cross_origin()
 def get_closed_tasks():
     email = request.args.get('email')
@@ -29,7 +31,7 @@ def get_closed_tasks():
     return jsonify({"closed_tasks":closed_tasks})
 
 
-@main.route("/change_task_status", methods=["POST"])
+@home.route("/change_task_status", methods=["POST"])
 @cross_origin()
 def change_task_status():
     input_data =request.json

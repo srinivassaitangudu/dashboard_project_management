@@ -17,7 +17,7 @@ class Dashboard():
 
         curs.execute(
             f""" SELECT * FROM projecttaskmaster P
-            WHERE P.assignee = \'{employee_id}\' AND P.completion IS FALSE
+            WHERE P.assigneeemail = \'{employee_id}\' AND P.completion IS FALSE
 """)
         open_tasks= curs.fetchall()
         curs.close()
@@ -28,7 +28,7 @@ class Dashboard():
         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
         curs.execute(
             f""" SELECT * FROM projecttaskmaster P
-            WHERE P.assignee = \'{employee_id}\' AND P.completion IS TRUE
+            WHERE P.assigneeemail = \'{employee_id}\' AND P.completion IS TRUE
             LIMIT 5
 """)
         closed_tasks= curs.fetchall()
@@ -42,7 +42,7 @@ class Dashboard():
         curs.execute(
             f"""
             UPDATE projecttaskmaster p SET completion = {status}
-            WHERE p.projecttaskid = {project_task_id} AND p.assignee = \'{employee_id}\';
+            WHERE p.projecttaskid = {project_task_id} AND p.assigneeemail = \'{employee_id}\';
 """)
         # curs.fetchall()
         self.db.commit()
