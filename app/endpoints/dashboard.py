@@ -19,7 +19,6 @@ def get_open_tasks():
     email = request.args.get('email')
 
     open_tasks = Dashboard().get_open_tasks(employee_id=email)
-
     return jsonify({'open_tasks':open_tasks})
 
 @home.route("/closed_tasks", methods=["GET"])
