@@ -7,10 +7,5 @@ def create_app():
     app.config.from_object("config.Config")
     app.register_blueprint(home, url_prefix="/dashboard")
     app.register_blueprint(project, url_prefix="/project")
-
-    print(app.url_map)
-
-
-    # with app.app_context():
        
     return app

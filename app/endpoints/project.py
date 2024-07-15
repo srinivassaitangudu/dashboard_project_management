@@ -15,7 +15,7 @@ def get_my_projects():
     projects = Project().get_my_projects(email= employee_id)
 
     # return jsonify({"projects":projects})
-    print(projects)
+    # print(type(projects))
     return projects
 
 
@@ -23,6 +23,6 @@ def get_my_projects():
 @cross_origin()
 def get_project():
     project_id = request.args.get("project_id")
-    project_info_raw = Project().get_project_info(project_id=project_id)
+    project_info = Project().get_project_info(project_id=project_id)
 
-    return jsonify({"project_info":project_info_raw})
+    return project_info
