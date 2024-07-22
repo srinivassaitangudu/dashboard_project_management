@@ -7,8 +7,6 @@ from flask_bcrypt import generate_password_hash, check_password_hash
 
 import psycopg2.extras
 
-
-
 class Project():
     def __init__(self):
         self.db= get_db_conn()
@@ -36,9 +34,25 @@ class Project():
         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         curs.execute(f"""
-            SELECT um.email AS assignee, pt.completion, pt.specialinstruction, pt.exception, tm.taskname, fm.functionname AS function FROM projecttaskmaster pt, taskmaster tm, usermaster um, functionmaster fm
+            SELECT 
+                um.email AS assignee,
+                pt.completion,
+                pt.specialinstruction,
+                pt.exception,
+                tm.taskname,
+                fm.functionname AS function 
             
-            WHERE pt.projectid = \'{project_id}\' AND pt.taskid = tm.taskid AND pt.assigneeemail= um.email AND pt.functionid=fm.functionid
+            FROM 
+                projecttaskmaster pt,
+                taskmaster tm,
+                usermaster um,
+                functionmaster fm
+            
+            WHERE 
+                pt.projectid = \'{project_id}\' AND 
+                pt.taskid = tm.taskid AND 
+                pt.assigneeemail= um.email AND 
+                pt.functionid=fm.functionid
             """)
         
         project_info= curs.fetchall()

@@ -14,7 +14,7 @@ class Dashboard():
     
     def get_open_tasks(self, employee_id):
         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
+        # TODO #add dependency tasks 
         curs.execute(
             f""" SELECT pt.*, tm.taskname, pm.projectname FROM projecttaskmaster pt, taskmaster tm, projectmaster pm
             WHERE pt.assigneeemail = \'{employee_id}\' AND pt.completion IS FALSE AND pt.taskid =  tm.taskid AND pt.projectid = pm.projectid
