@@ -26,3 +26,29 @@ def get_project():
     project_info = Project().get_project_info(project_id=project_id)
 
     return project_info
+
+
+@project.route("/get_create_task_info", methods=["GET"])
+@cross_origin()
+def get_create_task_info():
+    project_id = request.args.get("project_id")
+
+    try:
+        return jsonify(Project().get_create_task_info(project_id=project_id))
+    except Exception as e:
+        return generate_response(status=400, message= e)
+ 
+
+
+@project.route("/create_task", methods=["POST"])
+@cross_origin()
+def create_task():
+    data = request.get_json()
+    is_new = data.get("is_new")
+    
+    if is_new:
+        data["taskid"] = Project().create_new_task(data.get("taskname"))[0]
+    
+    projecttaskid = Project().add_new_task_to_project(task_id =data["taskid"], project_id=data["projectid"], function_id=data["functionid"],assigneeemail= data["assigneeemail"],exception= data["exception"], special_instruction=data["special_instruction"], weightage= data["weightage"],duedate= data["duedate"], createdby= data["createdby"] )
+
+    return jsonify(projecttaskid)
