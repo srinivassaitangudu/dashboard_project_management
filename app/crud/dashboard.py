@@ -49,7 +49,7 @@ class Dashboard():
         curs.execute(
             f"""
             UPDATE projecttaskmaster p SET completion = {status}
-            WHERE p.projecttaskid = {project_task_id} AND p.assigneeemail = \'{employee_id}\';
+            WHERE p.projecttaskid = \'{project_task_id}\' AND p.assigneeemail = \'{employee_id}\';
 """)
         # curs.fetchall()
         self.db.commit()
