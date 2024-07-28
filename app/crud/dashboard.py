@@ -43,12 +43,16 @@ class Dashboard():
         # return [task for task in closed_tasks]
          
     
-    def change_status(self, employee_id:str, project_task_id:str, status:bool):
+    def change_status(self, employee_id:str, project_task_id:str, status:bool, updated_by:str):
         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         curs.execute(
             f"""
-            UPDATE projecttaskmaster p SET completion = {status}
+            UPDATE projecttaskmaster p SET 
+            completion = {status},
+            lastupdatedon= \'{datetime.now(timezone.utc).date()}\',
+            lastupdatedby= \'{updated_by}\'
+
             WHERE p.projecttaskid = \'{project_task_id}\' AND p.assigneeemail = \'{employee_id}\';
 """)
         # curs.fetchall()
