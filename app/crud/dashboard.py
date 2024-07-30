@@ -51,9 +51,9 @@ class Dashboard():
             UPDATE projecttaskmaster p SET 
             completion = {status},
             lastupdatedon= \'{datetime.now(timezone.utc).date()}\',
-            lastupdatedby= \'{updated_by}\'
+            lastupdatedby= \'{employee_id}\'
 
-            WHERE p.projecttaskid = \'{project_task_id}\' AND p.assigneeemail = \'{employee_id}\';
+            WHERE p.projecttaskid = \'{project_task_id}\';
 """)
         # curs.fetchall()
         self.db.commit()
