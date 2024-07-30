@@ -157,6 +157,18 @@ class Project():
         curs.close()
 
         return project_task_id
+    
+    def delete_task_in_project(self, project_task_id):
+        curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        curs.execute(f"""
+            DELETE * FROM projecttaskmaster ptm
+            WHERE ptm.projecttaskid =\'{project_task_id}\'
+            RETURNING ptm.projecttaskid;""")
+        project_task_id = curs.fetchone()
+        self.db.commit()
+        curs.close()
+        return project_task_id
+
 
 
 

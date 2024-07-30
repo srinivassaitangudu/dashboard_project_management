@@ -52,3 +52,16 @@ def create_task():
     projecttaskid = Project().add_new_task_to_project(task_id =data["taskid"], project_id=data["projectid"], function_id=data["functionid"],assigneeemail= data["assigneeemail"],exception= data["exception"], special_instruction=data["special_instruction"], weightage= data["weightage"],duedate= data["duedate"], createdby= data["createdby"] )
 
     return jsonify(projecttaskid)
+
+@project.route("/delete_task_in_project", methods=["POST"]) 
+@cross_origin()
+def delete_task_in_project():
+    data = request.get_json()
+
+    projecttaskid = data.get("projectaskid")
+    try:
+        Project().delete_task_in_project( project_task_id=projecttaskid)
+        return jsonify({"message":"Task Deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"message":"Task deletion failed!", "data":e}), 400
+    
