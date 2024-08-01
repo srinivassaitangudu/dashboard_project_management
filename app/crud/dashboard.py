@@ -3,6 +3,7 @@ from app.utils.common import generate_response, TokenGenerator
 from datetime import datetime, timezone, timedelta
 from flask import jsonify
 from flask_bcrypt import generate_password_hash, check_password_hash
+from typing import List
 # from users.helper import send_forgot_password_email
 import psycopg2.extras
 
@@ -43,19 +44,40 @@ class Dashboard():
         # return [task for task in closed_tasks]
          
     
-    def change_status(self, employee_id:str, project_task_id:str, status:bool, updated_by:str):
+#     def change_status(self, employee_id:str, project_task_id:str, status:bool, updated_by:str):
+#         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+#         curs.execute(
+#             f"""
+#             UPDATE projecttaskmaster p SET 
+#             completion = {status},
+#             lastupdatedon= \'{datetime.now(timezone.utc).date()}\',
+#             lastupdatedby= \'{employee_id}\'
+
+#             WHERE p.projecttaskid = \'{project_task_id}\';
+# """)
+#         # curs.fetchall()
+#         self.db.commit()
+#         curs.close()
+#         self.db.close()
+#         return True
+    def change_status(self, employee_id:str, project_task_ids:List[str], status:str, updated_by:str):
         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        # Convert status to appropriate database value
+        status_value = 1 if status.lower() == 'completed' else 0
+
+        # Convert list of IDs to a format suitable for SQL IN clause
+        task_ids_str = ', '.join(f"'{task_id}'" for task_id in project_task_ids)
 
         curs.execute(
             f"""
             UPDATE projecttaskmaster p SET 
-            completion = {status},
+            completion = {status_value},
             lastupdatedon= \'{datetime.now(timezone.utc).date()}\',
             lastupdatedby= \'{employee_id}\'
 
-            WHERE p.projecttaskid = \'{project_task_id}\';
-""")
-        # curs.fetchall()
+            WHERE p.projecttaskid IN ({task_ids_str});
+        """)
         self.db.commit()
         curs.close()
         self.db.close()
