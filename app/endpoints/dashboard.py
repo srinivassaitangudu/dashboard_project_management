@@ -1,4 +1,5 @@
 from flask import Blueprint,request,  jsonify
+from app.crud import dashboard
 from app.crud.dashboard import Dashboard
 from app.utils.common import generate_response
 from app.utils.http_code import *
@@ -40,17 +41,70 @@ def get_closed_tasks():
 #         return generate_response(message="Status updated!", status= HTTP_200_OK)
 #     except Exception as e:
 #         return generate_response(message=e, status=HTTP_400_BAD_REQUEST)
+
+    
+
+# @home.route("/change_task_status", methods=["POST"])
+# @cross_origin()
+# def change_task_status():
+#         data = request.get_json()
+#         emails = data['email']
+#         project_task_ids = data['project_task_id']
+#         statuses = data['status']
+#         print(emails, project_task_ids, statuses)
+#         try:
+#             for email, project_task_id, status in zip(emails, project_task_ids, statuses):
+#                 # print(email, project_task_id, status)
+#                 Dashboard().change_status(employee_id=email, project_task_id=project_task_id, status=status, updated_by=data.get("updated_by", None))
+#             return generate_response(message="Status updated!", status= HTTP_200_OK)
+#         except Exception as e:
+#             return generate_response(message=str(e), status=HTTP_400_BAD_REQUEST)
+# @home.route("/change_task_status", methods=["POST"])
+# @cross_origin()
+# def change_task_status():
+#     tasks = request.get_json()
+#     try:
+#         for task in tasks:
+#             Dashboard().change_status(employee_id=task["email"], project_task_id=task["project_task_id"], status=task["status"], updated_by=task.get("updated_by", None))
+#         print(task)
+
+#         return generate_response(message="Status updated!", status= HTTP_200_OK)
+#     except Exception as e:
+#         return generate_response(message=str(e), status=HTTP_400_BAD_REQUEST)
+
 @home.route("/change_task_status", methods=["POST"])
 @cross_origin()
 def change_task_status():
-    input_data = request.get_json()
-
     try:
-        Dashboard().change_status(employee_id=input_data["email"], project_task_ids=input_data["project_task_ids"], status=input_data["status"], updated_by=input_data.get("updated_by", None))
-        return generate_response(message="Status updated!", status= HTTP_200_OK)
-    except Exception as e:
-        return generate_response(message=e, status=HTTP_400_BAD_REQUEST)
+        data_list = request.get_json()
     
+
+        for data in data_list:
+            email = data.get('email')
+            project_task_id = data.get('project_task_id')
+            status = data.get('status')
+            updated_by = data.get('updated_by', email)  # Use email if updated_by is not provided
+            print(email, project_task_id, status, updated_by)
+
+            # Ensure all necessary fields are provided
+            if not (email and project_task_id and status is not None):
+                return jsonify({"message": "Missing required fields"}), 400
+
+            # Change the status for the single task
+            result = Dashboard().change_status(
+                employee_id=email,
+                project_task_ids=[project_task_id],  # Passing a single task ID as a list
+                status=status,
+                updated_by=updated_by
+            )
+
+            if not result:
+                return jsonify({"message": "Failed to update task status"}), 400
+
+        return jsonify({"message": "Status updated!"}), 200
+
+    except Exception as e:
+        return jsonify({"message": str(e)}), 400
 
 
 
