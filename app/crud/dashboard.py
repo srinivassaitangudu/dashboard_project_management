@@ -17,8 +17,21 @@ class Dashboard():
         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
         # TODO #add dependency tasks 
         curs.execute(
-            f""" SELECT pt.*, tm.taskname, pm.projectname FROM projecttaskmaster pt, taskmaster tm, projectmaster pm
-            WHERE pt.assigneeemail = \'{employee_id}\' AND pt.completion IS FALSE AND pt.taskid =  tm.taskid AND pt.projectid = pm.projectid
+            f""" select pt.* , t.taskname,f.functionname, pm.projectname,u.name,coalesce(cu.name,'') as createdbyName, coalesce(lu.name,'') as lastupdatebyName
+from projecttaskmaster pt
+inner join taskmaster t on t.taskid =pt.taskid 
+inner join functionmaster f on f.functionid=t.functionid
+inner join projectmaster pm on pm.projectid =pt.projectid 
+inner join usermaster u on pt.assigneeemail = u.email 
+left join usermaster cu on pt.createdby = cu.email 
+left join usermaster lu on pt.lastupdatedby = lu.email
+where pt.assigneeemail = \'{employee_id}\'
+and pt.completion is false 
+order by CASE 
+        WHEN pt.duedate IS NULL THEN 1 
+        ELSE 0 
+    END,
+    pt.duedate
 """)
         open_tasks= curs.fetchall()
 
@@ -32,8 +45,17 @@ class Dashboard():
     def get_closed_tasks(self, employee_id):
         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
         curs.execute(
-            f""" SELECT pt.*, tm.taskname, pm.projectname FROM projecttaskmaster pt, taskmaster tm, projectmaster pm
-            WHERE pt.assigneeemail = \'{employee_id}\' AND pt.completion IS TRUE AND pt.taskid =  tm.taskid AND pt.projectid = pm.projectid
+            f""" select pt.* , t.taskname,f.functionname, pm.projectname,u.name,coalesce(cu.name,'') as createdbyName, coalesce(lu.name,'') as lastupdatebyName
+from projecttaskmaster pt
+inner join taskmaster t on t.taskid =pt.taskid 
+inner join functionmaster f on f.functionid=t.functionid
+inner join projectmaster pm on pm.projectid =pt.projectid 
+inner join usermaster u on pt.assigneeemail = u.email 
+left join usermaster cu on pt.createdby = cu.email 
+left join usermaster lu on pt.lastupdatedby = lu.email
+where pt.assigneeemail = \'{employee_id}\'
+and pt.completion is True 
+order by pt.lastupdatedon desc
             
 """)
         closed_tasks= curs.fetchall()
@@ -44,43 +66,41 @@ class Dashboard():
         # return [task for task in closed_tasks]
          
     
-#     def change_status(self, employee_id:str, project_task_id:str, status:bool, updated_by:str):
-#         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
-#         curs.execute(
-#             f"""
-#             UPDATE projecttaskmaster p SET 
-#             completion = {status},
-#             lastupdatedon= \'{datetime.now(timezone.utc).date()}\',
-#             lastupdatedby= \'{employee_id}\'
-
-#             WHERE p.projecttaskid = \'{project_task_id}\';
-# """)
-#         # curs.fetchall()
-#         self.db.commit()
-#         curs.close()
-#         self.db.close()
-#         return True
-    def change_status(self, employee_id:str, project_task_ids:List[str], status:str, updated_by:str):
+    def change_status(self, employee_id:str, project_task_id:str, status:bool, updated_by:str):
         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        # Convert status to appropriate database value
-        status_value = 1 if status.lower() == 'completed' else 0
-
-        # Convert list of IDs to a format suitable for SQL IN clause
-        task_ids_str = ', '.join(f"'{task_id}'" for task_id in project_task_ids)
-
         curs.execute(
             f"""
             UPDATE projecttaskmaster p SET 
-            completion = {status_value},
+            completion = {status},
             lastupdatedon= \'{datetime.now(timezone.utc).date()}\',
             lastupdatedby= \'{employee_id}\'
-
-            WHERE p.projecttaskid IN ({task_ids_str});
-        """)
+            WHERE p.projecttaskid = \'{project_task_id}\';
+""")
+        # curs.fetchall()
         self.db.commit()
         curs.close()
         self.db.close()
         return True
+    # def change_status(self, employee_id:str, project_task_ids:List[str], status:str, updated_by:str):
+    #     curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    #     # Convert status to appropriate database value
+    #     status_value = 1 if status.lower() == 'completed' else 0
+
+    #     # Convert list of IDs to a format suitable for SQL IN clause
+    #     task_ids_str = ', '.join(f"'{task_id}'" for task_id in project_task_ids)
+
+    #     curs.execute(
+    #         f"""
+    #         UPDATE projecttaskmaster p SET 
+    #         completion = {status_value},
+    #         lastupdatedon= \'{datetime.now(timezone.utc).date()}\',
+    #         lastupdatedby= \'{employee_id}\'
+
+    #         WHERE p.projecttaskid IN ({task_ids_str});
+    #     """)
+    #     self.db.commit()
+    #     curs.close()
+    #     self.db.close()
+    #     return True
     
 # dashboard = Dashboard()
