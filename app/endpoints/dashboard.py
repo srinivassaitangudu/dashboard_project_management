@@ -1,4 +1,4 @@
-from flask import Blueprint,request,  jsonify
+from flask import Blueprint, app, logging,request,  jsonify
 from app.crud import dashboard
 from app.crud.dashboard import Dashboard
 from app.utils.common import generate_response
@@ -77,18 +77,23 @@ def get_closed_tasks():
 def change_task_status():
     try:
         data_list = request.get_json()
-    
+        print(f"Received data: {data_list}")  
+        update_results = []
+
 
         for data in data_list:
             email = data.get('email')
             project_task_id = data.get('project_task_id')
             status = data.get('status')
-            updated_by = data.get('updated_by', email)  # Use email if updated_by is not provided
-            print(email, project_task_id, status, updated_by)
+            updated_by = data.get('updated_by', email) 
+            print(f"Processing: {email}, {project_task_id}, {status}, {updated_by}")
+
 
             # Ensure all necessary fields are provided
             if not (email and project_task_id and status is not None):
                 return jsonify({"message": "Missing required fields"}), 400
+            # print(email, project_task_id, status, updated_by)
+
 
             # Change the status for the single task
             result = Dashboard().change_status(
@@ -99,9 +104,11 @@ def change_task_status():
             )
 
             if not result:
-                return jsonify({"message": "Failed to update task status"}), 400
-
-        return jsonify({"message": "Status updated!"}), 200
+                print(f"Failed to update task status for: {email}, {project_task_id}")
+                update_results.append({"email": email, "project_task_id": project_task_id, "status": "failed"})
+            else:
+                update_results.append({"email": email, "project_task_id": project_task_id, "status": "success"})
+        return jsonify({"message": "Status updated!", "results": update_results}), 200
 
     except Exception as e:
         return jsonify({"message": str(e)}), 400
