@@ -87,8 +87,8 @@ def change_task_status():
                 email = data.get('email')
                 project_task_id = data.get('project_task_id')
                 status = data.get('status')
-                updated_by = data.get('updated_by', email) 
-                print(f"Processing: {email}, {project_task_id}, {status}, {updated_by}")
+                # updated_by = data.get('updated_by', email)
+                print(f"Processing: {email}, {project_task_id}, {status}")
 
 
                 # Ensure all necessary fields are provided
@@ -103,8 +103,8 @@ def change_task_status():
                 result = Dashboard().change_status(
                     employee_id=email,
                     project_task_ids=[project_task_id],  # Passing a single task ID as a list
-                    status=status,
-                    updated_by=updated_by
+                    status=status
+                    # updated_by=updated_by
                 )
 
                 if not result:

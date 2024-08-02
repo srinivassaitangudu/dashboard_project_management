@@ -61,23 +61,24 @@ class Dashboard():
 #         curs.close()
 #         self.db.close()
 #         return True
-    def change_status(self, employee_id:str, project_task_ids:List[str], status:str, updated_by:str):
+    def change_status(self, employee_id:str, project_task_ids:List[str], status:bool):
         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
         # Convert status to appropriate database value
-        status_value = 1 if status.lower() == 'completed' else 0
-
+        # status_value = 1 if status.lower() == 'completed' else 0
+        print("HEREEEEEE", project_task_ids, status, employee_id)
         if not project_task_ids:
                 raise ValueError("No project task IDs provided")
 
         # Convert list of IDs to a format suitable for SQL IN clause
         task_ids_str = ', '.join(f"'{task_id}'" for task_id in project_task_ids)
 
+        print(status)
         curs.execute(
             f"""
             UPDATE projecttaskmaster p SET 
-            completion = {status_value},
-            lastupdatedon= \'{datetime.now(timezone.utc).date()}\',
-            lastupdatedby= \'{employee_id}\'
+            completion = {status},
+            lastupdatedon= \'{datetime.now(timezone.utc).date()}\'
+            
 
             WHERE p.projecttaskid IN ({task_ids_str});
         """)
