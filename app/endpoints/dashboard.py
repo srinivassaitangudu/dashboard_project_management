@@ -124,6 +124,8 @@ def change_task_status():
 
     except Exception as e:
         return jsonify({"message": str(e)}), 400
+    
+    print("Done processing all items")
 
 
 
