@@ -71,6 +71,8 @@ class Dashboard():
 
         # Convert list of IDs to a format suitable for SQL IN clause
         task_ids_str = ', '.join(f"'{task_id}'" for task_id in project_task_ids)
+        print("HEREEEEEE", project_task_ids, status, employee_id)
+
 
         print(status)
         curs.execute(
