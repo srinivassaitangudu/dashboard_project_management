@@ -87,24 +87,20 @@ def change_task_status():
                 email = data.get('email')
                 project_task_id = data.get('project_task_id')
                 status = data.get('status')
-                # updated_by = data.get('updated_by', email)
                 print(f"Processing: {email}, {project_task_id}, {status}")
 
 
-                # Ensure all necessary fields are provided
                 if not (email and project_task_id and status is not None):
                     print("Missing required fields")
 
                     return jsonify({"message": "Missing required fields"}), 400
-                # print(email, project_task_id, status, updated_by)
 
 
-                # Change the status for the single task
                 result = Dashboard().change_status(
                     employee_id=email,
-                    project_task_ids=[project_task_id],  # Passing a single task ID as a list
+                    project_task_ids=[project_task_id],  
                     status=status
-                    # updated_by=updated_by
+                    
                 )
 
                 if not result:
@@ -125,7 +121,6 @@ def change_task_status():
     except Exception as e:
         return jsonify({"message": str(e)}), 400
     
-    print("Done processing all items")
 
 
 
