@@ -8,14 +8,12 @@ from flask_cors import cross_origin
 
 project = Blueprint('project', __name__)
 
-@project.route("/get_my_projects", methods=["GET"])
+@project.route("/get_all_projects", methods=["GET"])
 @cross_origin()
-def get_my_projects():
+def get_all_projects():
     employee_id = request.args.get('email')
-    projects = Project().get_my_projects(email= employee_id)
+    projects = Project().get_all_projects(email= employee_id)
 
-    # return jsonify({"projects":projects})
-    # print(type(projects))
     return projects
 
 

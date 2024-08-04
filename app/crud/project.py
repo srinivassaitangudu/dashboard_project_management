@@ -12,17 +12,15 @@ class Project():
         self.db= get_db_conn()
 
 
-    def get_my_projects(self, email):
+    def get_all_projects(self, email):
         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         curs.execute(f"""
-        SELECT DISTINCT p.* FROM projectmaster p, projecttaskmaster pt
-        WHERE pt.assigneeemail = \'{email}\' AND pt.projectid=p.projectid
+        SELECT DISTINCT p.* FROM projectmaster p;
 """)
         
         projects = curs.fetchall()
-        # return projects
-
+    
         column_names = [desc[0] for desc in curs.description]
         curs.close()
 
