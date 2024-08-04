@@ -12,7 +12,7 @@ class Project():
         self.db= get_db_conn()
 
 
-    def get_all_projects(self, email):
+    def get_all_projects(self):
         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         curs.execute(f"""

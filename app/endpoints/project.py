@@ -12,7 +12,7 @@ project = Blueprint('project', __name__)
 @cross_origin()
 def get_all_projects():
     employee_id = request.args.get('email')
-    projects = Project().get_all_projects(email= employee_id)
+    projects = Project().get_all_projects()
 
     return projects
 
