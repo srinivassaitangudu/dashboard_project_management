@@ -34,6 +34,7 @@ def get_closed_tasks():
 @home.route("/change_task_status", methods=["POST"])
 @cross_origin()
 def change_task_status():
+
     try:
         data_list = request.get_json()
         print(f"Received data: {data_list}")  
@@ -71,6 +72,7 @@ def change_task_status():
         
         print(f"Update results: {update_results}")  # New print statement
         return jsonify({"message": "Status updated!", "results": update_results}), 200
+
 
     except Exception as e:
         return jsonify({"message": str(e)}), 400
