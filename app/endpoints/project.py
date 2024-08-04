@@ -11,7 +11,6 @@ project = Blueprint('project', __name__)
 @project.route("/get_all_projects", methods=["GET"])
 @cross_origin()
 def get_all_projects():
-    employee_id = request.args.get('email')
     projects = Project().get_all_projects()
 
     return projects

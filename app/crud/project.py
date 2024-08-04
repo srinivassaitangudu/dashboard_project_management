@@ -26,7 +26,7 @@ class Project():
 
         result = [dict(zip(column_names, row)) for row in projects]
         
-        return jsonify(result)
+        return jsonify(result), 200
     
     def get_project_info(self, project_id):
         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
