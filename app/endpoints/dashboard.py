@@ -1,4 +1,5 @@
-from flask import Blueprint,request,  jsonify
+from flask import Blueprint, app, logging,request,  jsonify
+from app.crud import dashboard
 from app.crud.dashboard import Dashboard
 from app.utils.common import generate_response
 from app.utils.http_code import *
@@ -33,11 +34,45 @@ def get_closed_tasks():
 @home.route("/change_task_status", methods=["POST"])
 @cross_origin()
 def change_task_status():
-    input_data =request.get_json()
 
     try:
-        Dashboard().change_status(employee_id=input_data["email"], project_task_id=input_data["project_task_id"], status=input_data["status"], updated_by=input_data.get("updated_by", None))
-        return generate_response(message="Status updated!", status= HTTP_200_OK)
-    except Exception as e:
-        return generate_response(message=e, status=HTTP_400_BAD_REQUEST)
+        data_list = request.get_json()
+        print(f"Received data: {data_list}")  
+        update_results = []
 
+
+        for data in data_list:
+            try:
+                email = data.get('email')
+                project_task_id = data.get('project_task_id')
+                status = data.get('status')
+                print(f"Processing: {email}, {project_task_id}, {status}")
+
+                if not (email and project_task_id and status is not None):
+                    print("Missing required fields")
+                    return jsonify({"message": "Missing required fields"}), 400
+
+                result = Dashboard().change_status(
+                    employee_id=email,
+                    project_task_ids=[project_task_id],  
+                    status=status
+                )
+
+                if not result:
+                    print(f"Failed to update task status for: {email}, {project_task_id}")
+                    update_results.append({"email": email, "project_task_id": project_task_id, "status": "failed"})
+                else:
+                    update_results.append({"email": email, "project_task_id": project_task_id, "status": "success"})
+            
+            except Exception as e:
+                print(f"Exception while processing item: {e}")
+                update_results.append({"email": email, "project_task_id": project_task_id, "status": "exception", "message": str(e)})
+
+        
+        
+        print(f"Update results: {update_results}")  # New print statement
+        return jsonify({"message": "Status updated!", "results": update_results}), 200
+
+
+    except Exception as e:
+        return jsonify({"message": str(e)}), 400

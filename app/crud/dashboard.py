@@ -65,23 +65,33 @@ order by pt.lastupdatedon desc
         return (result)
         # return [task for task in closed_tasks]
          
-    
-    def change_status(self, employee_id:str, project_task_id:str, status:bool, updated_by:str):
+
+
+    def change_status(self, employee_id:str, project_task_ids:List[str], status:bool):
         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+     
+        if not project_task_ids:
+                raise ValueError("No project task IDs provided")
+
+        task_ids_str = ', '.join(f"'{task_id}'" for task_id in project_task_ids)
+        # print("HEREEEEEE", project_task_ids, status, employee_id)
+
+
+        print(status) 
+
         curs.execute(
             f"""
             UPDATE projecttaskmaster p SET 
             completion = {status},
-            lastupdatedon= \'{datetime.now(timezone.utc).date()}\',
-            lastupdatedby= \'{employee_id}\'
-            WHERE p.projecttaskid = \'{project_task_id}\';
-""")
-        # curs.fetchall()
+            lastupdatedon= \'{datetime.now(timezone.utc).date()}\'
+            WHERE p.projecttaskid IN ({task_ids_str});
+            """)
+
         self.db.commit()
         curs.close()
         self.db.close()
         return True
     
-    
+   
     
 # dashboard = Dashboard()
