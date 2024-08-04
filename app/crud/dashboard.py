@@ -43,28 +43,10 @@ class Dashboard():
         return (result)
         # return [task for task in closed_tasks]
          
-    
-#     def change_status(self, employee_id:str, project_task_id:str, status:bool, updated_by:str):
-#         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-#         curs.execute(
-#             f"""
-#             UPDATE projecttaskmaster p SET 
-#             completion = {status},
-#             lastupdatedon= \'{datetime.now(timezone.utc).date()}\',
-#             lastupdatedby= \'{employee_id}\'
-
-#             WHERE p.projecttaskid = \'{project_task_id}\';
-# """)
-#         # curs.fetchall()
-#         self.db.commit()
-#         curs.close()
-#         self.db.close()
-#         return True
     def change_status(self, employee_id:str, project_task_ids:List[str], status:bool):
         curs = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
      
-        # print("HEREEEEEE", project_task_ids, status, employee_id)
         if not project_task_ids:
                 raise ValueError("No project task IDs provided")
 
@@ -78,10 +60,9 @@ class Dashboard():
             UPDATE projecttaskmaster p SET 
             completion = {status},
             lastupdatedon= \'{datetime.now(timezone.utc).date()}\'
-            
-
             WHERE p.projecttaskid IN ({task_ids_str});
-        """)
+            """)
+
         self.db.commit()
         curs.close()
         self.db.close()
