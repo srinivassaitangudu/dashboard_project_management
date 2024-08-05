@@ -160,6 +160,7 @@ class Project():
     def get_project_info(self, projectid):
 
         project_info = self.get_project_meta_info(projectid=projectid)
+        project_info["readinessscore"] *=100
 
         raw_project_functions_info = self.get_project_functions_info(projectid=projectid)
         formatted_project_functions_info = self.groupby_function_info(function_info=raw_project_functions_info)
@@ -234,7 +235,7 @@ class Project():
             # Populate the main dictionary structure
             grouped_data[functionid]['functionid'] = item['functionid']
             grouped_data[functionid]['functionname'] = item['functionname']
-            grouped_data[functionid]['functionreadinessscore'] = item['functionreadinessscore']
+            grouped_data[functionid]['functionreadinessscore'] = item['functionreadinessscore']*100
             grouped_data[functionid]['functionleademail'] = item['functionleademail']
             grouped_data[functionid]['functionleadname'] = item['functionleadname']
         
