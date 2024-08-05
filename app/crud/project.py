@@ -261,6 +261,23 @@ class Project():
         formatted_data = list(grouped_data.values())
         return formatted_data
 
+    def change_assignee(self, task_and_assignee_info):
+        curs=self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        curs.execute(f"""
+            UPDATE projecttaskmaster ptm 
+            SET 
+            ptm.assigneeemail =\'{task_and_assignee_info["assigneeemail"]}\',
+            ptm.lastupdatedby =\'{task_and_assignee_info["email"]}\',
+            ptm.lastupdatedon = \'{datetime.now(timezone.utc)}\'
+            WHERE ptm.projecttaskid =\'{task_and_assignee_info["projecttaskid"]}\'; """)
+        
+        self.db.commit()
+        curs.close()
+        # self.db.close()
+        return True
+
+
         
 
 

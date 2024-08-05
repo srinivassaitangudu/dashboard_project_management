@@ -65,3 +65,17 @@ def delete_task_in_project():
     except Exception as e:
         return jsonify({"message":"Task deletion failed!", "data":e}), 400
     
+
+@project.route("/change_assignees", methods =["POST"])
+@cross_origin()
+def change_assignees():
+    try:
+        task_and_assignees_info = request.get_json()
+
+        for task_and_assignee in task_and_assignees_info:
+            Project().change_assignee(task_and_assignee)
+        return generate_response(message ="New Assignees have been assigned to the tasks. ", status=200)
+    except Exception as e:
+        return jsonify(message ="Error occured while changing the assignees", errors=e, status =400)
+
+    
