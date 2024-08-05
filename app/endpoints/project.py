@@ -23,7 +23,7 @@ def get_project():
         project_id = request.args.get("project_id")
         project_info = Project().get_project_info(projectid=project_id)
 
-        return generate_response(data=project_info, status=200)
+        return jsonify(project_info), 200
     except Exception as e:
         return generate_response(message="Some error occured while fetching project info!", status=400 )
 
