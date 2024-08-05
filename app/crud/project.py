@@ -161,6 +161,8 @@ class Project():
 
         project_info = self.get_project_meta_info(projectid=projectid)
         project_info["readinessscore"] *=100
+        project_info["readinessscore"] = f"{project_info['readinessscore']:.2f}"
+
 
         raw_project_functions_info = self.get_project_functions_info(projectid=projectid)
         formatted_project_functions_info = self.groupby_function_info(function_info=raw_project_functions_info)
@@ -175,7 +177,7 @@ class Project():
 
         curs.execute(
             f"""
-            SELECT pm.*, pv.readinessscore 
+            SELECT pm.*, pv.readinessscore
             FROM projectmaster pm
             INNER JOIN projectreadinessscoreview pv ON pv.projectid = pm.projectid
             WHERE pm.projectid = \'{projectid}\'""")
@@ -236,6 +238,7 @@ class Project():
             grouped_data[functionid]['functionid'] = item['functionid']
             grouped_data[functionid]['functionname'] = item['functionname']
             grouped_data[functionid]['functionreadinessscore'] = item['functionreadinessscore']*100
+            grouped_data[functionid]['functionreadinessscore'] = "{:.2f}".format(grouped_data[functionid]['functionreadinessscore'])
             grouped_data[functionid]['functionleademail'] = item['functionleademail']
             grouped_data[functionid]['functionleadname'] = item['functionleadname']
         
