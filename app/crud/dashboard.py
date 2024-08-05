@@ -77,8 +77,6 @@ order by pt.lastupdatedon desc
         # print("HEREEEEEE", project_task_ids, status, employee_id)
 
 
-        print(status) 
-
         curs.execute(
             f"""
             UPDATE projecttaskmaster p SET 

@@ -19,10 +19,13 @@ def get_all_projects():
 @project.route("/project_view",methods=['GET'])
 @cross_origin()
 def get_project():
-    project_id = request.args.get("project_id")
-    project_info = Project().get_project_info(project_id=project_id)
+    try:
+        project_id = request.args.get("project_id")
+        project_info = Project().get_project_info(projectid=project_id)
 
-    return project_info
+        return generate_response(data=project_info, status=200)
+    except Exception as e:
+        return generate_response(message="Some error occured while fetching project info!", status=400 )
 
 
 @project.route("/get_create_task_info", methods=["GET"])
