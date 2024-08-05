@@ -265,12 +265,12 @@ class Project():
         curs=self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         curs.execute(f"""
-            UPDATE projecttaskmaster ptm 
+            UPDATE projecttaskmaster 
             SET 
-            ptm.assigneeemail =\'{task_and_assignee_info["assigneeemail"]}\',
-            ptm.lastupdatedby =\'{task_and_assignee_info["email"]}\',
-            ptm.lastupdatedon = \'{datetime.now(timezone.utc)}\'
-            WHERE ptm.projecttaskid =\'{task_and_assignee_info["projecttaskid"]}\'; """)
+            assigneeemail =\'{task_and_assignee_info["assigneeemail"]}\',
+            lastupdatedby =\'{task_and_assignee_info["email"]}\',
+            lastupdatedon = \'{datetime.now(timezone.utc)}\'
+            WHERE projecttaskid =\'{task_and_assignee_info["projecttaskid"]}\'; """)
         
         self.db.commit()
         curs.close()
