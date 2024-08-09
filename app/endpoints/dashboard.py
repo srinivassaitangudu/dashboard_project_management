@@ -17,18 +17,25 @@ def health_check():
 @home.route("/open_tasks", methods=["GET"])
 @cross_origin()
 def get_open_tasks():
-    email = request.args.get('email')
+    try:
+        email = request.args.get('email')
 
-    open_tasks = Dashboard().get_open_tasks(employee_id=email)
-    return jsonify({'open_tasks':open_tasks})
+        open_tasks = Dashboard().get_open_tasks(employee_id=email)
+        return jsonify({'open_tasks':open_tasks}), 200
+    except Exception as e:
+        return generate_response(status=400, message= e)
+
 
 @home.route("/closed_tasks", methods=["GET"])
 @cross_origin()
 def get_closed_tasks():
-    email = request.args.get('email')
+    try:
+        email = request.args.get('email')
 
-    closed_tasks = Dashboard().get_closed_tasks(employee_id=email)
-    return jsonify({"closed_tasks":closed_tasks})
+        closed_tasks = Dashboard().get_closed_tasks(employee_id=email)
+        return jsonify({"closed_tasks":closed_tasks})
+    except Exception as e:
+        return generate_response(status=400, message= e)
 
 
 @home.route("/change_task_status", methods=["POST"])
@@ -37,7 +44,7 @@ def change_task_status():
 
     try:
         data_list = request.get_json()
-        print(f"Received data: {data_list}")  
+        # print(f"Received data: {data_list}")  
         update_results = []
 
 
@@ -46,7 +53,7 @@ def change_task_status():
                 email = data.get('email')
                 project_task_id = data.get('project_task_id')
                 status = data.get('status')
-                print(f"Processing: {email}, {project_task_id}, {status}")
+                # print(f"Processing: {email}, {project_task_id}, {status}")
 
                 if not (email and project_task_id and status is not None):
                     print("Missing required fields")

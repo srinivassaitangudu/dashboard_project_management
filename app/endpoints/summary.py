@@ -10,9 +10,10 @@ summary = Blueprint('summary', __name__)
 @summary.route("/get_summary", methods=['GET'])
 @cross_origin()
 def get_summary():
-    email = request.args.get('email_id')
-    # try :
-    summary = Summary().get_summary(email_id=email)
-    return summary
-    # except Exception as e :
-    #     return generate_response(status = ) 
+    try :
+        email = request.args.get('email_id')
+        
+        summary = Summary().get_summary(email_id=email)
+        return summary
+    except Exception as e :
+        return generate_response(status =400, message ="Some error occured while getting the summary." ) 
